@@ -2,6 +2,10 @@ FROM nginx:stable
 
 # Install PHP and required extensions
 RUN apt-get update && \
+  apt-get install -y lsb-release apt-transport-https ca-certificates wget && \
+  wget -qO /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg && \
+  echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
+  apt-get update && \
   apt-get install -y php8.1 php8.1-fpm php8.1-intl php8.1-mysql libicu-dev && \
   rm -rf /var/lib/apt/lists/*
 
