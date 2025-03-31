@@ -24,11 +24,15 @@ RUN apt-get update && \
 # Configure PHP-FPM
 RUN sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/' /etc/php/8.1/fpm/php.ini
 
+# Create nginx directories
+RUN mkdir -p /etc/nginx/snippets
+
 # Create default Nginx configuration
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Copy custom Nginx configuration
+# Copy Nginx configurations
 COPY default.conf /etc/nginx/conf.d/
+COPY snippets/fastcgi-php.conf /etc/nginx/snippets/
 
 # Add your PHP application
 COPY app /var/www/html/
@@ -39,5 +43,5 @@ RUN chown -R www-data:www-data /var/www/html
 # Expose port 80
 EXPOSE 80
 
-# Start Nginx and PHP-FPM (using array format as recommended)
+# Start Nginx and PHP-FPM
 CMD ["sh", "-c", "service php8.1-fpm start && nginx -g 'daemon off;'"]
